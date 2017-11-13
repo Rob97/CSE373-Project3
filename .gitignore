@@ -1,2 +1,11 @@
 /.gradle/
 /bin/
+*.bin
+build/classes/test/misc/BaseTest.class
+*.class
+build/resources/main/webapp/static/styles.css
+build/resources/main/webapp/templates/search.mustache
+build/resources/main/webapp/templates/main.mustache
+build/test-results/test/binary/output.bin.idx
+src/main/java/datastructures/.DS_Store
+src/main/java/datastructures/.DS_Store
