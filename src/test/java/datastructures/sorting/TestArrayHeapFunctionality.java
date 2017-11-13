@@ -23,5 +23,52 @@ public class TestArrayHeapFunctionality extends BaseTest {
         IPriorityQueue<Integer> heap = this.makeInstance();
         heap.insert(3);
         assertEquals(1, heap.size());
+        heap.insert(4);
+        assertEquals(2,heap.size());
+        heap.insert(5);
+        assertEquals(3,heap.size());
+    }
+    
+    public void testRemoveMin() {
+    		IPriorityQueue<Integer> heap = this.makeInstance();
+    		heap.insert(3);
+    		heap.insert(4);
+    		heap.insert(5);
+    		heap.removeMin();
+    		assertEquals(2, heap.size());
+    		assertEquals(4, heap.peekMin());
+    		heap.removeMin();
+    		assertEquals(1, heap.size());
+    		assertEquals(5, heap.peekMin());
+    }
+    
+    public void testInsertionEfficiency() {
+    		IPriorityQueue<Integer> heap = this.makeInstance();
+    		for(int i = 0; i < 1000; i++) 
+    	        heap.insert(i);	
+    		assertEquals(1000,heap.size());
+    }
+    
+    public void testRemoveMinEfficiency() {
+    	IPriorityQueue<Integer> heap = this.makeInstance();
+		for(int i = 0; i < 1000; i++) 
+	        heap.insert(i);
+		for(int i = 0; i < 1000; i++)
+			heap.removeMin();
+    }
+    
+    public void testPeekMin() {
+    		IPriorityQueue<Integer> heap = this.makeInstance();
+    		heap.insert(3);
+    		assertEquals(3, heap.peekMin());
+    		heap.insert(4);
+    		assertEquals(3, heap.peekMin());
+    		heap.insert(1);
+    		assertEquals(1, heap.peekMin());
+    }
+   
+    public void testIsEmpty() {
+    		IPriorityQueue<Integer> heap = this.makeInstance();
+    		assertTrue(heap.isEmpty());
     }
 }
