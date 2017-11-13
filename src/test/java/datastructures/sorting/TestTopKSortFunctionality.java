@@ -23,4 +23,24 @@ public class TestTopKSortFunctionality extends BaseTest {
             assertEquals(15 + i, top.get(i));
         }
     }
+    
+    public void testSmallData() {
+    		IList<Integer> list = new DoubleLinkedList<>();
+    		for(int i = 0; i < 5; i++) 
+    			list.add(i);
+    		IList<Integer> top = Searcher.topKSort(10, list);
+    		assertEquals(5, top.size());
+    		for(int i = 0; i < top.size(); i++)
+    			assertEquals(i, top.get(i));
+    }
+    
+    public void testLargeData() {
+    		IList<Integer> list = new DoubleLinkedList<>();
+    		for(int i = 0; i < 1000; i++) 
+    			list.add(i);
+    		IList<Integer> top = Searcher.topKSort(100, list);
+    		assertEquals(50, top.size());
+    		for(int i = 0; i < top.size(); i++)
+    			assertEquals(950 + i, top.get(i));
+    }
 }
