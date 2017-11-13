@@ -55,7 +55,7 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     		T min = null;  
     		int order = 0;
     		for(int i = 1; i <= NUM_CHILDREN; i++ ) {
-    			if(position * NUM_CHILDREN + i < this.size && heap[position * NUM_CHILDREN + i].compareTo(heap[position]) == -1) {
+    			if( position * NUM_CHILDREN + i < heap.length && heap[position * NUM_CHILDREN + i] != null && heap[position * NUM_CHILDREN + i].compareTo(heap[position]) == -1) {
     				if(min == null || min != null && heap[position * NUM_CHILDREN + i].compareTo(min) == 1) {
     					min = heap[position * NUM_CHILDREN + i];
     					order = i;
