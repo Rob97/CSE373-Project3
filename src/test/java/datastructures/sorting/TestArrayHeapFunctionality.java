@@ -46,9 +46,9 @@ public class TestArrayHeapFunctionality extends BaseTest {
     @Test(timeout=SECOND)
     public void testInsertionEfficiency() {
     		IPriorityQueue<Integer> heap = this.makeInstance();
-    		for(int i = 0; i < 1000; i++) 
+    		for(int i = 10000; i > 0; i--) 
     	        heap.insert(i);	
-    		assertEquals(1000,heap.size());
+    		assertEquals(100000,heap.size());
     }
     
     @Test(timeout=SECOND)
@@ -56,8 +56,10 @@ public class TestArrayHeapFunctionality extends BaseTest {
     	IPriorityQueue<Integer> heap = this.makeInstance();
 		for(int i = 0; i < 1000; i++) 
 	        heap.insert(i);
+		assertEquals(1000, heap.size());
 		for(int i = 0; i < 1000; i++)
 			heap.removeMin();
+		assertEquals(0, heap.size());
     }
     
     @Test(timeout=SECOND)

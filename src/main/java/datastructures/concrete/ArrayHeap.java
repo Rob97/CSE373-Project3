@@ -44,8 +44,8 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     @Override
     public T removeMin() {
         T result = this.peekMin();
-        heap[0] = heap[heap.length -1];
-		heap[heap.length -1] = null;
+        heap[0] = heap[this.size -1];
+		heap[this.size -1] = null;
         removeMinHelper(0);
         this.size--;
         return result;
@@ -55,7 +55,7 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     		T min = null;  
     		int order = 0;
     		for(int i = 1; i <= NUM_CHILDREN; i++ ) {
-    			if(heap[position * NUM_CHILDREN + i].compareTo(heap[position]) == -1) {
+    			if(position * NUM_CHILDREN + i < this.size && heap[position * NUM_CHILDREN + i].compareTo(heap[position]) == -1) {
     				if(min == null || min != null && heap[position * NUM_CHILDREN + i].compareTo(min) == 1) {
     					min = heap[position * NUM_CHILDREN + i];
     					order = i;
@@ -77,11 +77,14 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     @Override
     public void insert(T item) {
         if(heap.length == size) {
-        		//make *2 array length
+        		T[] newHeap = makeArrayOfT(this.size * 2);
+        		for(int i = 0; i < size; i++) 
+        			newHeap[i] = heap[i];
+    		heap = newHeap;
         }
         heap[size] = item;
         insertionHelper(size);
-    		this.size++;
+    		size++;
     }
     
     private void insertionHelper(int position) {
