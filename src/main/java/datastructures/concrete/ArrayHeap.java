@@ -12,16 +12,17 @@ import java.util.Arrays;
 public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     // See spec: you must implement a implement a 4-heap.
     private static final int NUM_CHILDREN = 4;
-
+    private static final int DEFAULT_SIZE = 5;
     // You MUST use this field to store the contents of your heap.
     // You may NOT rename this field: we will be inspecting it within
     // our private tests.
     private T[] heap;
-
+    private int size;
     // Feel free to add more fields and constants.
 
     public ArrayHeap() {
-        throw new NotYetImplementedException();
+        heap = makeArrayOfT(DEFAULT_SIZE);
+        size = 0;
     }
 
     /**
@@ -42,21 +43,58 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
 
     @Override
     public T removeMin() {
-        throw new NotYetImplementedException();
+        T result = this.peekMin();
+        heap[0] = heap[heap.length -1];
+		heap[heap.length -1] = null;
+        removeMinHelper(0);
+        this.size--;
+        return result;
+    }
+    
+    private void removeMinHelper(int position) {
+    		T min = null;  
+    		int order = 0;
+    		for(int i = 1; i <= NUM_CHILDREN; i++ ) {
+    			if(heap[position * NUM_CHILDREN + i].compareTo(heap[position]) == -1) {
+    				if(min == null || min != null && heap[position * NUM_CHILDREN + i].compareTo(min) == 1) {
+    					min = heap[position * NUM_CHILDREN + i];
+    					order = i;
+    				}
+    			}
+    		}
+    		if(min != null) {
+    			heap[position * NUM_CHILDREN + order] = heap[position];
+    			heap[position] = min;
+    			removeMinHelper(position * NUM_CHILDREN + order);
+    		}	
     }
 
     @Override
     public T peekMin() {
-        throw new NotYetImplementedException();
+        return heap[0];
     }
 
     @Override
     public void insert(T item) {
-        throw new NotYetImplementedException();
+        if(heap.length == size) {
+        		//make *2 array length
+        }
+        heap[size] = item;
+        insertionHelper(size);
+    		this.size++;
     }
-
+    
+    private void insertionHelper(int position) {
+    		if(heap[(position-1) / NUM_CHILDREN].compareTo(heap[position]) == 1) {
+    			T item = heap[(position-1) / NUM_CHILDREN];
+    			heap[(position-1) / NUM_CHILDREN] = heap[position];
+    			heap[position] = item;
+    			insertionHelper((position-1) / NUM_CHILDREN);
+    		}
+    }
+    
     @Override
     public int size() {
-        throw new NotYetImplementedException();
+    		return this.size;
     }
 }

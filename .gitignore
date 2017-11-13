@@ -1,2 +1,8 @@
 /.gradle/
 /bin/
+build/classes/test/search/TestTfIdfAnalyzer.class
+*.class
+*.idx
+*.mustache
+*.bin
+build/resources/main/webapp/static/styles.css
