@@ -4,6 +4,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
+import java.util.Random;
+
 import misc.BaseTest;
 import datastructures.concrete.ArrayHeap;
 import datastructures.interfaces.IPriorityQueue;
@@ -78,4 +80,46 @@ public class TestArrayHeapFunctionality extends BaseTest {
     		IPriorityQueue<Integer> heap = this.makeInstance();
     		assertTrue(heap.isEmpty());
     }
+    
+    @Test()
+    public void testInsertInReverseOrder() {
+    		IPriorityQueue<Integer> heap = this.makeInstance();
+    		for(int i = 100; i > 0; i--) {
+    			heap.insert(i);
+    		}
+    		assertEquals(100, heap.size());
+    		for(int i = 1; i <= 100; i++) {
+    			assertEquals(i, heap.removeMin());
+    		}
+    }
+    
+    @Test(timeout=SECOND)
+    public void testInsertHalfInOrder() {
+    		IPriorityQueue<Integer> heap = this.makeInstance();
+    		for(int i = 100; i > 50; i--) {
+    			heap.insert(i);
+    			heap.insert(100 - i);
+    		}
+    		heap.insert(50);
+    		assertEquals(101, heap.size());
+    		for(int i = 0; i <= 100; i++) {
+    			assertEquals(i, heap.removeMin());
+    		}
+    }
+    
+    @Test(timeout=SECOND)
+    public void testInsertRandom() {
+    		IPriorityQueue<Integer> heap = this.makeInstance();
+    		Random rand = new Random("thIS is  A  cOOl SeEd".hashCode());
+    		for(int i = 0; i < 100; i++) {
+    			heap.insert(rand.nextInt((1000 - -1000) + 1) + -1000);
+    		}
+    		int lastValue = heap.removeMin();
+    		while(!heap.isEmpty()) {
+    			int current = heap.removeMin();
+    			assertTrue(lastValue <= current);
+    			lastValue = current;
+    		}
+    }
+    
 }
