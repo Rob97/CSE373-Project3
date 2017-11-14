@@ -26,8 +26,8 @@ public class TestSortingStress extends BaseTest {
         return new ArrayHeap<>();
     }
 	
-    @Test()
-    public void stressTestRandomSort() {
+    @Test(timeout=5*SECOND)
+    public void stressTestRandomSortPartial() {
     		Random rand = new Random("mY rAndOM SeED".hashCode());
     		IList<Integer> iList = new DoubleLinkedList<>();
     		List<Integer> list = new ArrayList<Integer>();
@@ -37,6 +37,23 @@ public class TestSortingStress extends BaseTest {
     			list.add(random);
     		}
     		IList<Integer> iSorted = Searcher.topKSort(50, iList);
+    		Collections.sort(list);
+    		for(int i = 0; i < iSorted.size(); i++) {
+    			assertEquals(iSorted.get(i), list.get((list.size()-iSorted.size()) + i));
+    		}
+    }
+    
+    @Test(timeout=5*SECOND)
+    public void stressTestRandomSortAll() {
+    		Random rand = new Random("mY rAndOM SeED".hashCode());
+    		IList<Integer> iList = new DoubleLinkedList<>();
+    		List<Integer> list = new ArrayList<Integer>();
+    		for(int i = 0; i < 100000; i++) {
+    			int random = rand.nextInt((1000000 - -1000000) + 1) + -1000000; //Create random number between -1000 and 1000
+    			iList.add(random);
+    			list.add(random);
+    		}
+    		IList<Integer> iSorted = Searcher.topKSort(100000, iList);
     		Collections.sort(list);
     		for(int i = 0; i < iSorted.size(); i++) {
     			assertEquals(iSorted.get(i), list.get((list.size()-iSorted.size()) + i));
