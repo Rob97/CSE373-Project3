@@ -46,25 +46,6 @@ public class TestArrayHeapFunctionality extends BaseTest {
     }
     
     @Test(timeout=SECOND)
-    public void testInsertionEfficiency() {
-    		IPriorityQueue<Integer> heap = this.makeInstance();
-    		for(int i = 1000000; i > 0; i--) 
-    	        heap.insert(i);	
-    		assertEquals(1000000,heap.size());
-    }
-    
-    @Test(timeout=SECOND)
-    public void testRemoveMinEfficiency() {
-    	IPriorityQueue<Integer> heap = this.makeInstance();
-		for(int i = 0; i < 1000000; i++) 
-	        heap.insert(i);
-		assertEquals(1000000, heap.size());
-		for(int i = 0; i < 1000000; i++)
-			heap.removeMin();
-		assertEquals(0, heap.size());
-    }
-    
-    @Test(timeout=SECOND)
     public void testPeekMin() {
     		IPriorityQueue<Integer> heap = this.makeInstance();
     		heap.insert(3);

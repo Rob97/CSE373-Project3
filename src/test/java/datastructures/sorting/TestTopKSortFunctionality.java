@@ -1,8 +1,10 @@
 package datastructures.sorting;
 
 import misc.BaseTest;
+import datastructures.concrete.ArrayHeap;
 import datastructures.concrete.DoubleLinkedList;
 import datastructures.interfaces.IList;
+import datastructures.interfaces.IPriorityQueue;
 import misc.Searcher;
 
 import static org.junit.Assert.fail;
@@ -21,7 +23,12 @@ import org.junit.Test;
  * See spec for details on what kinds of tests this class should include.
  */
 public class TestTopKSortFunctionality extends BaseTest {
-    @Test()
+	
+	protected <T extends Comparable<T>> IPriorityQueue<T> makeInstance() {
+        return new ArrayHeap<>();
+    }
+	
+    @Test(timeout=SECOND)
     public void testSimpleUsage() {
         IList<Integer> list = new DoubleLinkedList<>();
         for (int i = 0; i < 20; i++) {
@@ -36,20 +43,20 @@ public class TestTopKSortFunctionality extends BaseTest {
     }
     
     @Test(timeout=SECOND)
-    public void testSmallerThanN() {
+    public void testListSmallerThanN() {
     		IList<Integer> list = new DoubleLinkedList<>();
-    		for(int i = 5; i > 0; i--) {
+    		for(int i = 6; i > 0; i--) {
     			list.add(i);
     		}
-    		IList<Integer> top = Searcher.topKSort(10, list);
-    		assertEquals(5, top.size());
-    		for(int i = 0; i < top.size(); i++) {
-    			assertEquals(i, top.get(i));
+    		IList<Integer> sorted = Searcher.topKSort(10, list);
+    		assertEquals(6, sorted.size());
+    		for(int i = 1; i <= sorted.size(); i++) {
+    			assertEquals(i, sorted.get(i-1));
     		}
     }
     
-    @Test(timeout=SECOND)
-    public void testLargeThanN() {
+    @Test()
+    public void testListLargerThanN() {
     		IList<Integer> list = new DoubleLinkedList<>();
     		for(int i = 1000; i > 0; i--) {
     			list.add(i);
@@ -57,7 +64,7 @@ public class TestTopKSortFunctionality extends BaseTest {
     		IList<Integer> top = Searcher.topKSort(100, list);
     		assertEquals(100, top.size());
     		for(int i = 0; i < top.size(); i++) {
-    			assertEquals(900 + i, top.get(i));
+    			assertEquals(901 + i, top.get(i));
     		}
     }
     
@@ -98,6 +105,23 @@ public class TestTopKSortFunctionality extends BaseTest {
     		Collections.sort(list);
     		for(int i = 0; i < list.size(); i++) {
     			assertEquals(iSorted.get(i), list.get(i));
+    		}
+    }
+    
+    @Test(timeout=SECOND)
+    public void testPartialSortRandom() {
+    		Random rand = new Random("mY rAndOM SeED".hashCode());
+    		IList<Integer> iList = new DoubleLinkedList<>();
+    		List<Integer> list = new ArrayList<Integer>();
+    		for(int i = 0; i < 200; i++) {
+    			int random = rand.nextInt((1000 - -1000) + 1) + -1000; //Create random number between -1000 and 1000
+    			iList.add(random);
+    			list.add(random);
+    		}
+    		IList<Integer> iSorted = Searcher.topKSort(50, iList);
+    		Collections.sort(list);
+    		for(int i = 0; i < iSorted.size(); i++) {
+    			assertEquals(iSorted.get(i), list.get((list.size()-iSorted.size()) + i));
     		}
     }
     

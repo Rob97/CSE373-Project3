@@ -42,6 +42,7 @@ public class Searcher {
         		if(i < k) {
         			minHeap.insert(input.get(i));
         		} else {
+        			T cur = input.get(i);
         			if(minHeap.peekMin().compareTo(input.get(i)) < 0) {
         				minHeap.removeMin();
         				minHeap.insert(input.get(i));
@@ -49,7 +50,7 @@ public class Searcher {
         		}
         }
         IList<T> list = new DoubleLinkedList<T>();    
-        for(int i = 0; i < k; i++) {
+        while(!minHeap.isEmpty()) {
         		list.add(minHeap.removeMin());
         }
         return list;
