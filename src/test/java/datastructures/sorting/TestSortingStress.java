@@ -14,15 +14,15 @@ import static org.junit.Assert.assertTrue;
  * See spec for details on what kinds of tests this class should include.
  */
 public class TestSortingStress extends BaseTest {
-    @Test(timeout=10*SECOND)
+    @Test(timeout=15*SECOND)
     public void testPlaceholder() {
 		IList<Integer> list = new DoubleLinkedList<>();
-		for(int i = 0; i < 1000000; i++) 
+		for(int i = 0; i < 100000; i++) 
 			list.add(i);
 		IList<Integer> top = Searcher.topKSort(10000, list);
-		assertEquals(50, top.size());
+		assertEquals(10000, top.size());
 		for(int i = 0; i < top.size(); i++)
-			assertEquals(990000 + i, top.get(i));
+			assertEquals(90000 + i, top.get(i));
         assertTrue(true);
     }
 }
