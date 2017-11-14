@@ -23,6 +23,7 @@ public class TestArrayHeapFunctionality extends BaseTest {
     @Test(timeout=SECOND)
     public void testBasicSize() {
         IPriorityQueue<Integer> heap = this.makeInstance();
+        assertEquals(0, heap.size());
         heap.insert(3);
         assertEquals(1, heap.size());
         heap.insert(4);
@@ -103,4 +104,39 @@ public class TestArrayHeapFunctionality extends BaseTest {
     		}
     }
     
+    @Test(timeout=SECOND)
+    public void testRemoveMinException() {
+    		IPriorityQueue<Integer> heap = this.makeInstance();
+    		boolean thrown = false; 
+    		try {
+    			heap.removeMin();
+    		} catch(EmptyContainerException e) {
+    			thrown = true;
+    		}
+    		assertEquals(thrown, true);
+    }
+    
+    @Test(timeout=SECOND)
+    public void testPeekMinException() {
+    		IPriorityQueue<Integer> heap = this.makeInstance();
+    		boolean thrown = false; 
+    		try {
+    			heap.peekMin();
+    		} catch(EmptyContainerException e) {
+    			thrown = true;
+    		}
+    		assertEquals(thrown, true);
+    }
+    
+    @Test(timeout=SECOND)
+    public void testInsertException() {
+    		IPriorityQueue<Integer> heap = this.makeInstance();
+    		boolean thrown = false; 
+    		try {
+    			heap.insert(null);
+    		} catch(IllegalArgumentException e) {
+    			thrown = true;
+    		}
+    		assertEquals(thrown, true);
+    }
 }

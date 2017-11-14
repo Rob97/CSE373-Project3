@@ -7,6 +7,7 @@ import datastructures.interfaces.IList;
 import datastructures.interfaces.IPriorityQueue;
 import misc.Searcher;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
@@ -123,6 +124,37 @@ public class TestTopKSortFunctionality extends BaseTest {
     		for(int i = 0; i < iSorted.size(); i++) {
     			assertEquals(iSorted.get(i), list.get((list.size()-iSorted.size()) + i));
     		}
+    }
+    
+    @Test(timeout=SECOND)
+    public void testZeroK() {
+    		IList<Integer> list = new DoubleLinkedList<>();
+        for (int i = 0; i < 20; i++) {
+            list.add(i);
+        }
+
+        IList<Integer> top = Searcher.topKSort(0, list);
+        assertEquals(top != null, true);
+        assertEquals(top.isEmpty(), true);
+    }
+    
+    
+    @Test(timeout=SECOND)
+    public void testSortException() {
+    		Random rand = new Random("mY rAndOM SeED".hashCode());
+    		IList<Integer> iList = new DoubleLinkedList<>();
+    		for(int i = 0; i < 200; i++) {
+    			int random = rand.nextInt((1000 - -1000) + 1) + -1000; //Create random number between -1000 and 1000
+    			iList.add(random);
+    			
+    		}
+    		boolean thrown = false;
+    		try {
+    			IList<Integer> iSorted = Searcher.topKSort(-1, iList);
+    		} catch(IllegalArgumentException e) {
+    			thrown = true;
+    		}
+    		assertEquals(thrown, true);
     }
     
     

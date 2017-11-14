@@ -36,18 +36,20 @@ public class Searcher {
     		if(k < 0) {
     			throw new IllegalArgumentException("k must be greater than 0");
     		}
-
+    			
         IPriorityQueue<T> minHeap = new ArrayHeap<T>();
-        for(int i = 0; i < input.size(); i++) {
-        		if(i < k) {
-        			minHeap.insert(input.get(i));
-        		} else {
-        			T cur = input.get(i);
-        			if(minHeap.peekMin().compareTo(input.get(i)) < 0) {
-        				minHeap.removeMin();
-        				minHeap.insert(input.get(i));
-        			}
-        		}
+        if(k > 0) {
+	        for(int i = 0; i < input.size(); i++) {
+	        		if(i < k) {
+	        			minHeap.insert(input.get(i));
+	        		} else {
+	        			T cur = input.get(i);
+	        			if(minHeap.peekMin().compareTo(input.get(i)) < 0) {
+	        				minHeap.removeMin();
+	        				minHeap.insert(cur);
+	        			}
+	        		}
+	        }
         }
         IList<T> list = new DoubleLinkedList<T>();    
         while(!minHeap.isEmpty()) {
