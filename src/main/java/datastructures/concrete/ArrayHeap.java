@@ -55,8 +55,11 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     		T min = null;  
     		int order = 0;
     		for(int i = 1; i <= NUM_CHILDREN; i++ ) {
-    			if( position * NUM_CHILDREN + i < heap.length && heap[position * NUM_CHILDREN + i] != null && heap[position * NUM_CHILDREN + i].compareTo(heap[position]) == -1) {
-    				if(min == null || min != null && heap[position * NUM_CHILDREN + i].compareTo(min) == 1) {
+    			//If child is valid and less than parent
+    			if( position * NUM_CHILDREN + i < heap.length && heap[position * NUM_CHILDREN + i] != null 
+    					&& heap[position * NUM_CHILDREN + i].compareTo(heap[position]) < 0) {
+    				//If we have found a child smaller than the parent or if we found an even smaller child
+    				if(min == null || min != null && heap[position * NUM_CHILDREN + i].compareTo(min) < 0) { 
     					min = heap[position * NUM_CHILDREN + i];
     					order = i;
     				}
@@ -80,7 +83,7 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
         		T[] newHeap = makeArrayOfT(this.size * 2);
         		for(int i = 0; i < size; i++) 
         			newHeap[i] = heap[i];
-    		heap = newHeap;
+        		heap = newHeap;
         }
         heap[size] = item;
         insertionHelper(size);
@@ -88,7 +91,7 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     }
     
     private void insertionHelper(int position) {
-    		if(heap[(position-1) / NUM_CHILDREN].compareTo(heap[position]) == 1) {
+    		if(heap[(position-1) / NUM_CHILDREN].compareTo(heap[position]) > 0) { //If parent is larger than child
     			T item = heap[(position-1) / NUM_CHILDREN];
     			heap[(position-1) / NUM_CHILDREN] = heap[position];
     			heap[position] = item;
