@@ -39,17 +39,16 @@ public class Searcher {
     			
         IPriorityQueue<T> minHeap = new ArrayHeap<T>();
         if(k > 0) {
-	        for(int i = 0; i < input.size(); i++) {
-	        		if(i < k) {
-	        			minHeap.insert(input.get(i));
+        		for(T cur : input) {
+        			if(minHeap.size() < k) {
+	        			minHeap.insert(cur);
 	        		} else {
-	        			T cur = input.get(i);
-	        			if(minHeap.peekMin().compareTo(input.get(i)) < 0) {
+	        			if(minHeap.peekMin().compareTo(cur) < 0) {
 	        				minHeap.removeMin();
 	        				minHeap.insert(cur);
 	        			}
 	        		}
-	        }
+        		}
         }
         IList<T> list = new DoubleLinkedList<T>();    
         while(!minHeap.isEmpty()) {
