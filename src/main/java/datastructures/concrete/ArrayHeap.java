@@ -9,16 +9,14 @@ import java.util.Arrays;
 /**
  * See IPriorityQueue for details on what each method must do.
  */
+
+//An 0-indexing array min heap where each node has up to four child nodes.
+
 public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
-    // See spec: you must implement a implement a 4-heap.
     private static final int NUM_CHILDREN = 4;
     private static final int DEFAULT_SIZE = 5;
-    // You MUST use this field to store the contents of your heap.
-    // You may NOT rename this field: we will be inspecting it within
-    // our private tests.
     private T[] heap;
     private int size;
-    // Feel free to add more fields and constants.
 
     public ArrayHeap() {
         heap = makeArrayOfT(DEFAULT_SIZE);
@@ -42,6 +40,8 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     }
 
     @Override
+    //remove and return the smallest element in the heap. If the whole 
+    //heap is null, throw EmptyContainerException.
     public T removeMin() {
     		if(heap[0] == null) {
     			throw new EmptyContainerException();
@@ -54,6 +54,11 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
         return result;
     }
     
+    //Pass an integer position as an parameter.
+    //Help RemoveMin() to sort the heap after removing smallest element.
+    //It will compare the element in given position to its child elements
+    //and swap position if the child is smaller than the given element and 
+    //is the smallest element among all children.
     private void removeMinHelper(int position) {
     		T min = null;  
     		int order = 0;
@@ -75,6 +80,7 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     		}	
     }
 
+    //return the smallest elements in the heap
     @Override
     public T peekMin() {
     		if(heap[0] == null) {
@@ -83,6 +89,8 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
         return heap[0];
     }
 
+    //Pass an object T as a parameter. Throw IllegalArgumentException if 
+    //T is null. It will insert given item to heap based on sorting order. 
     @Override
     public void insert(T item) {
     		if(item == null) {
@@ -99,6 +107,10 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     		size++;
     }
     
+    //Pass an integer position as an parameter. Help insert() to determine 
+    //the correct order of element with given position. It compare the given 
+    //given element with its parent element. If the its parent element is larger 
+    //than the element, swap their positions. 
     private void insertionHelper(int position) {
     		if(heap[(position-1) / NUM_CHILDREN].compareTo(heap[position]) > 0) { //If parent is larger than child
     			T item = heap[(position-1) / NUM_CHILDREN];
@@ -108,6 +120,7 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     		}
     }
     
+    //return the size of array Heap. Does not include null values. 
     @Override
     public int size() {
     		return this.size;
