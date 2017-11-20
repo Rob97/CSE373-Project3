@@ -92,6 +92,17 @@ public class ChainedHashDictionary<K, V> implements IDictionary<K, V> {
 		// Note: you do not need to change this method
 		return new ChainedIterator<>(this.chains);
 	}
+	
+	//TODO Used for debugging, remove when done with project
+	@Override
+	public String toString() {
+		String str = "{";
+		for(KVPair<K, V> pair : this) {
+			str += "\"" + pair.getKey().toString() + "\"=" + pair.getValue().toString() + ", ";
+		}
+		str += "}";
+		return str;
+	}
 
 	// Pass an K object as a parameter. Return a hash code of the K.
 	private int getHashCodeForKey(K key) {

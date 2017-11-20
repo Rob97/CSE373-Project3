@@ -5,5 +5,6 @@ build/classes/test/search/TestTfIdfAnalyzer.class
 *.idx
 *.mustache
 *.bin
+*.cache
 build/resources/main/webapp/static/styles.css
 src/main/java/datastructures/.DS_Store

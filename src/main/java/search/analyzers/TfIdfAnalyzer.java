@@ -1,5 +1,9 @@
 package search.analyzers;
 
+import datastructures.concrete.ChainedHashSet;
+import datastructures.concrete.KVPair;
+import datastructures.concrete.dictionaries.ArrayDictionary;
+import datastructures.concrete.dictionaries.ChainedHashDictionary;
 import datastructures.interfaces.IDictionary;
 import datastructures.interfaces.IList;
 import datastructures.interfaces.ISet;
@@ -35,8 +39,8 @@ public class TfIdfAnalyzer {
         // You should uncomment these lines when you're ready to begin working
         // on this class.
 
-        //this.idfScores = this.computeIdfScores(webpages);
-        //this.documentTfIdfVectors = this.computeAllDocumentTfIdfVectors(webpages);
+        this.idfScores = this.computeIdfScores(webpages);
+        this.documentTfIdfVectors = this.computeAllDocumentTfIdfVectors(webpages);
     }
 
     // Note: this method, strictly speaking, doesn't need to exist. However,
@@ -57,7 +61,27 @@ public class TfIdfAnalyzer {
      * in any documents to their IDF score.
      */
     private IDictionary<String, Double> computeIdfScores(ISet<Webpage> pages) {
-        throw new NotYetImplementedException();
+    		IDictionary<String, Double> idfScores = new ChainedHashDictionary<String, Double>();
+        for (Webpage page : pages) {
+        		//Transfer all the words in the page to a set to remove duplicates
+        		ISet<String> docWords = new ChainedHashSet<String>();
+        		for(String word : page.getWords()) {
+        			docWords.add(word);
+        		}
+        		//Increment the score dictionary based on the unique words in the document
+        		for(String word : docWords) {
+        			if(idfScores.containsKey(word)) {
+        				idfScores.put(word, idfScores.get(word) + 1);
+        			} else {
+        				idfScores.put(word, 1.0);
+        			}
+        		}
+        }
+        //Take value of number of docs containing the term and calculate the idf score
+        for(KVPair<String, Double> pair : idfScores) {
+        		idfScores.put(pair.getKey(), Math.log(pages.size() / pair.getValue()));
+        }
+        return idfScores;
     }
 
     /**
@@ -67,16 +91,35 @@ public class TfIdfAnalyzer {
      * We are treating the list of words as if it were a document.
      */
     private IDictionary<String, Double> computeTfScores(IList<String> words) {
-        throw new NotYetImplementedException();
+    		IDictionary<String, Double> dict = new ChainedHashDictionary<String, Double>();
+    		//Count number of occurrences of each word
+    		for(String word : words) {
+    			if(dict.containsKey(word)) {
+    				dict.put(word, dict.get(word) + 1);
+    			} else {
+    				dict.put(word, 1.0);
+    			}
+    		}
+    		//Calculate tf score for page based on number of occurrences
+    		for(KVPair<String, Double> pair : dict) {
+    			dict.put(pair.getKey(), pair.getValue() / words.size());
+    		}
+    		return dict;
     }
 
     /**
      * See spec for more details on what this method should do.
      */
     private IDictionary<URI, IDictionary<String, Double>> computeAllDocumentTfIdfVectors(ISet<Webpage> pages) {
-        // Hint: this method should use the idfScores field and
-        // call the computeTfScores(...) method.
-        throw new NotYetImplementedException();
+    		IDictionary<URI, IDictionary<String, Double>> documentTfIdfVectors = new ArrayDictionary<URI, IDictionary<String, Double>>();
+        for(Webpage page : pages) {
+        		IDictionary<String, Double> scores = computeTfScores(page.getWords());
+        		for(KVPair<String, Double> pair : scores) {
+        			scores.put(pair.getKey(), pair.getValue() * idfScores.get(pair.getKey()));
+        		}
+        		documentTfIdfVectors.put(page.getUri(), scores);
+        }
+        return documentTfIdfVectors;
     }
 
     /**
