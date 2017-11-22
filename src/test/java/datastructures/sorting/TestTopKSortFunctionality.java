@@ -52,7 +52,7 @@ public class TestTopKSortFunctionality extends BaseTest {
 		}
 	}
 
-	@Test()
+	@Test(timeout = SECOND)
 	public void testListLargerThanN() {
 		IList<Integer> list = new DoubleLinkedList<>();
 		for (int i = 1000; i > 0; i--) {

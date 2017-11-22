@@ -28,11 +28,11 @@ public class TfIdfAnalyzer {
 	//
 	// We will use each webpage's page URI as a unique key.
 	private IDictionary<URI, IDictionary<String, Double>> documentTfIdfVectors;
-	private IDictionary<String, Double> idfLog;
+	private IDictionary<URI, Double> documentTfIdfNorms;
 	// Feel free to add extra fields and helper methods.
 
 	public TfIdfAnalyzer(ISet<Webpage> webpages) {
-		this.idfLog = new ChainedHashDictionary<String, Double>();
+		this.documentTfIdfNorms = new ChainedHashDictionary<URI, Double>();
 		this.idfScores = this.computeIdfScores(webpages);
 		this.documentTfIdfVectors = this.computeAllDocumentTfIdfVectors(webpages);
 	}
@@ -57,7 +57,6 @@ public class TfIdfAnalyzer {
 	 */
 	private IDictionary<String, Double> computeIdfScores(ISet<Webpage> pages) {
 		IDictionary<String, Double> idfScores = new ChainedHashDictionary<String, Double>();
-		idfLog = new ChainedHashDictionary<String, Double>();
 		for (Webpage page : pages) {
 			// Transfer all the words in the page to a set to remove duplicates
 			ISet<String> docWords = new ChainedHashSet<String>();
@@ -76,7 +75,6 @@ public class TfIdfAnalyzer {
 		// Take value of number of docs containing the term and calculate the idf score
 		for (KVPair<String, Double> pair : idfScores) {
 			double logNumber = Math.log(pages.size() / pair.getValue());
-			this.idfLog.put(pair.getKey(), logNumber);
 			idfScores.put(pair.getKey(), logNumber);
 		}
 		return idfScores;
@@ -116,6 +114,7 @@ public class TfIdfAnalyzer {
 				scores.put(pair.getKey(), pair.getValue() * idfScores.get(pair.getKey()));
 			}
 			documentTfIdfVectors.put(page.getUri(), scores);
+			documentTfIdfNorms.put(page.getUri(), norm(scores));
 		}
 		return documentTfIdfVectors;
 	}
@@ -139,7 +138,7 @@ public class TfIdfAnalyzer {
 			double queryWordScore = queryVector.get(word.getKey());
 			numerator += docWordScore * queryWordScore;
 		}
-		double denominator = norm(documentVector) * norm(queryVector);
+		double denominator = documentTfIdfNorms.get(pageUri) * norm(queryVector);
 		if( denominator != 0) {
 			return numerator / denominator;
 		}
@@ -160,8 +159,8 @@ public class TfIdfAnalyzer {
 		IDictionary<String, Double> queryVector = new ChainedHashDictionary<String, Double>();
 		IDictionary<String, Double> queryTFScores = computeTfScores(query);
 		for (String word : query) {
-			if (this.idfLog.containsKey(word)) {
-				double tfIdfScore = queryTFScores.get(word) * idfLog.get(word);
+			if (this.idfScores.containsKey(word)) {
+				double tfIdfScore = queryTFScores.get(word) * idfScores.get(word);
 				queryVector.put(word, tfIdfScore);
 			}
 		}
