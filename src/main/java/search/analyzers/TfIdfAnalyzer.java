@@ -130,25 +130,26 @@ public class TfIdfAnalyzer {
 		IDictionary<String, Double> documentVector = documentTfIdfVectors.get(pageUri);
 		IDictionary<String, Double> queryVector = computeQueryVector(query);
 		double numerator = 0.0;
-		for(KVPair<String, Double> word : queryVector) {
+		for (KVPair<String, Double> word : queryVector) {
 			double docWordScore = 0.0;
-			if(documentVector.containsKey(word.getKey())) {
+			if (documentVector.containsKey(word.getKey())) {
 				docWordScore = documentVector.get(word.getKey());
 			}
 			double queryWordScore = queryVector.get(word.getKey());
 			numerator += docWordScore * queryWordScore;
 		}
 		double denominator = documentTfIdfNorms.get(pageUri) * norm(queryVector);
-		if( denominator != 0) {
+		if (denominator != 0) {
 			return numerator / denominator;
 		}
 		return 0.0;
 	}
-	
-	//help to calculate Norm. See spec for more details on what this method should do.
+
+	// help to calculate Norm. See spec for more details on what this method should
+	// do.
 	private double norm(IDictionary<String, Double> vector) {
 		double output = 0.0;
-		for(KVPair<String, Double> pair : vector) {
+		for (KVPair<String, Double> pair : vector) {
 			double score = pair.getValue();
 			output += score * score;
 		}

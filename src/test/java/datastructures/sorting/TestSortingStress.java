@@ -26,7 +26,7 @@ public class TestSortingStress extends BaseTest {
 		return new ArrayHeap<>();
 	}
 
-	@Test(timeout = 5 * SECOND)
+	@Test(timeout = 10 * SECOND)
 	public void stressTestRandomSortPartial() {
 		Random rand = new Random("mY rAndOM SeED".hashCode());
 		IList<Integer> iList = new DoubleLinkedList<>();
@@ -44,7 +44,7 @@ public class TestSortingStress extends BaseTest {
 		}
 	}
 
-	@Test(timeout = 5 * SECOND)
+	@Test(timeout = 10 * SECOND)
 	public void stressTestRandomSortAll() {
 		Random rand = new Random("mY rAndOM SeED".hashCode());
 		IList<Integer> iList = new DoubleLinkedList<>();
