@@ -42,11 +42,9 @@ public class Searcher {
 			for (T cur : input) {
 				if (minHeap.size() < k) {
 					minHeap.insert(cur);
-				} else {
-					if (minHeap.peekMin().compareTo(cur) < 0) {
-						minHeap.removeMin();
-						minHeap.insert(cur);
-					}
+				} else if((minHeap.peekMin().compareTo(cur) < 0)){
+					minHeap.removeMin();
+					minHeap.insert(cur);
 				}
 			}
 		}
