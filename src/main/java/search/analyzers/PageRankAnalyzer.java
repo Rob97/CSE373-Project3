@@ -136,7 +136,7 @@ public class PageRankAnalyzer {
         			}
         		}
         		if(allLessThanEpsilon) {
-        			break;
+        			return pageRank;
         		} else {
         			pageRank = tempPageRank;
         		}
