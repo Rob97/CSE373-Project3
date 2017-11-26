@@ -104,22 +104,27 @@ public class PageRankAnalyzer {
     		for(URI uri : uriLog) {
     			pageRank.put(uri, initialPageRank);
     		}
-    		
-
         for (int i = 0; i < limit; i++) {
         		IDictionary<URI, Double> tempPageRank = new ChainedHashDictionary<>();
-        		for(URI uri : uriLog) {
-        			//add (1 - d) / N for every page
-        			tempPageRank.put(uri, (1.0 - decay) / uriLog.size());
-        		}
-        		
+        		double zeroOutGoingSum = 0; //use to calculate no ougoing links case
         		for(URI uri : uriLog) {
         			ISet<URI> uriSet = graph.get(uri);
+        			if(uriSet.size() == 0) {
+        				zeroOutGoingSum += pageRank.get(uri) / uriLog.size() * decay;
+        			}
         			for(URI uris : uriSet) {
+        				if(!tempPageRank.containsKey(uris)){
+        					tempPageRank.put(uris, pageRank.get(uri) /  uriSet.size() * decay);
+        				} else {
         				//take the old page rank for every webpage and equally share it with every web page it links to. 
-        				tempPageRank.put(uris, tempPageRank.get(uris) + pageRank.get(uris) /  uriSet.size() * decay);
+        				tempPageRank.put(uris, tempPageRank.get(uris) + pageRank.get(uri) /  uriSet.size() * decay);
+        				}
         			}
         		}
+        		for(URI uri : uriLog) {
+        			tempPageRank.put(uri, tempPageRank.get(uri) + (1.0 - decay) / uriLog.size() + zeroOutGoingSum);
+        		}
+        		
         		boolean allLessThanEpsilon = true;
         		for(URI uri : uriLog) {
         			//check if a page has out going links
