@@ -99,7 +99,8 @@ public class PageRankAnalyzer {
                                                    int limit,
                                                    double epsilon) {
     		IDictionary<URI, Double> pageRank = new ChainedHashDictionary<>();
-    		double initialPageRank = 1 / graph.size();
+    		double initialPageRank = 1.0 / uriLog.size();
+    		//Initialize the rank value
     		for(URI uri : uriLog) {
     			pageRank.put(uri, initialPageRank);
     		}
@@ -109,7 +110,7 @@ public class PageRankAnalyzer {
         		IDictionary<URI, Double> tempPageRank = new ChainedHashDictionary<>();
         		for(URI uri : uriLog) {
         			//add (1 - d) / N for every page
-        			tempPageRank.put(uri, (1 - decay) / uriLog.size());
+        			tempPageRank.put(uri, (1.0 - decay) / uriLog.size());
         		}
         		
         		for(URI uri : uriLog) {
@@ -122,7 +123,7 @@ public class PageRankAnalyzer {
         		boolean allLessThanEpsilon = true;
         		for(URI uri : uriLog) {
         			//check if a page has out going links
-        			if(tempPageRank.get(uri) == (1 - decay) / uriLog.size()) {
+        			if(tempPageRank.get(uri) == (1.0 - decay) / uriLog.size()) {
         				tempPageRank.put(uri, tempPageRank.get(uri) + pageRank.get(uri) / uriLog.size() * decay);
         			}
         			//compare epsilon value
