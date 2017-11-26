@@ -8,3 +8,6 @@ build/classes/test/search/TestTfIdfAnalyzer.class
 *.cache
 build/resources/main/webapp/static/styles.css
 src/main/java/datastructures/.DS_Store
+src.zip
+.DS_Store
+.DS_Store

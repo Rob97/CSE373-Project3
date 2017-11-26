@@ -1,5 +1,7 @@
 package search.analyzers;
 
+import datastructures.concrete.ChainedHashSet;
+import datastructures.concrete.dictionaries.ChainedHashDictionary;
 import datastructures.interfaces.IDictionary;
 import datastructures.interfaces.ISet;
 import misc.exceptions.NotYetImplementedException;
@@ -13,7 +15,8 @@ import java.net.URI;
  * See the spec for more details.
  */
 public class PageRankAnalyzer {
-    private IDictionary<URI, Double> pageRanks;
+	private IDictionary<URI, Double> pageRanks;
+    private ISet <URI> uriLog;
 
     /**
      * Computes a graph representing the internet and computes the page rank of all
@@ -28,6 +31,7 @@ public class PageRankAnalyzer {
      *                  page rank never converges.
      */
     public PageRankAnalyzer(ISet<Webpage> webpages, double decay, double epsilon, int limit) {
+    		uriLog = new ChainedHashSet<URI>();
         // Implementation note: We have commented these method calls out so your
         // search engine doesn't immediately crash when you try running it for the
         // first time.
@@ -36,10 +40,10 @@ public class PageRankAnalyzer {
         // on this class.
 
         // Step 1: Make a graph representing the 'internet'
-        //IDictionary<URI, ISet<URI>> graph = this.makeGraph(webpages);
+        IDictionary<URI, ISet<URI>> graph = this.makeGraph(webpages);
 
         // Step 2: Use this graph to compute the page rank for each webpage
-        //this.pageRanks = this.makePageRanks(graph, decay, limit, epsilon);
+        this.pageRanks = this.makePageRanks(graph, decay, limit, epsilon);
 
         // Note: we don't store the graph as a field: once we've computed the
         // page ranks, we no longer need it!
@@ -57,7 +61,25 @@ public class PageRankAnalyzer {
      * entirely "self-contained".
      */
     private IDictionary<URI, ISet<URI>> makeGraph(ISet<Webpage> webpages) {
-        throw new NotYetImplementedException();
+    		ISet<URI> allowedUri = new ChainedHashSet<URI>();
+    		//build an uri set which contains all web pages' links
+    		for(Webpage page : webpages) {
+    			allowedUri.add(page.getUri());
+    		}
+    		
+    		//build the graph
+    		IDictionary<URI, ISet<URI>> graph = new ChainedHashDictionary<>();
+    		for(Webpage page : webpages) {
+    			ISet<URI> uris= new ChainedHashSet<URI>();
+    			for(URI uri : page.getLinks()) {
+    				if(allowedUri.contains(uri) && !uri.equals(page.getUri()) && !uris.contains(uri)) {
+    					uris.add(uri);
+    				}
+    			}
+    			graph.put(page.getUri(), uris);
+    			uriLog.add(page.getUri());
+    		}
+    		return graph;
     }
 
     /**
@@ -76,15 +98,45 @@ public class PageRankAnalyzer {
                                                    double decay,
                                                    int limit,
                                                    double epsilon) {
-        // Step 1: The initialize step should go here
+    		IDictionary<URI, Double> pageRank = new ChainedHashDictionary<>();
+    		double initialPageRank = 1 / graph.size();
+    		for(URI uri : uriLog) {
+    			pageRank.put(uri, initialPageRank);
+    		}
+    		
 
         for (int i = 0; i < limit; i++) {
-            // Step 2: The update step should go here
-
-            // Step 3: the convergence step should go here.
-            // Return early if we've converged.
+        		IDictionary<URI, Double> tempPageRank = new ChainedHashDictionary<>();
+        		for(URI uri : uriLog) {
+        			//add (1 - d) / N for every page
+        			tempPageRank.put(uri, (1 - decay) / uriLog.size());
+        		}
+        		
+        		for(URI uri : uriLog) {
+        			ISet<URI> uriSet = graph.get(uri);
+        			for(URI uris : uriSet) {
+        				//take the old page rank for every webpage and equally share it with every web page it links to. 
+        				tempPageRank.put(uris, tempPageRank.get(uris) + pageRank.get(uris) /  uriSet.size() * decay);
+        			}
+        		}
+        		boolean allLessThanEpsilon = true;
+        		for(URI uri : uriLog) {
+        			//check if a page has out going links
+        			if(tempPageRank.get(uri) == (1 - decay) / uriLog.size()) {
+        				tempPageRank.put(uri, tempPageRank.get(uri) + pageRank.get(uri) / uriLog.size() * decay);
+        			}
+        			//compare epsilon value
+        			if(Math.abs(pageRank.get(uri) - tempPageRank.get(uri)) > epsilon) {
+        				allLessThanEpsilon = false;
+        			}
+        		}
+        		if(allLessThanEpsilon) {
+        			break;
+        		} else {
+        			pageRank = tempPageRank;
+        		}
         }
-        throw new NotYetImplementedException();
+        return pageRank;
     }
 
     /**
@@ -95,7 +147,6 @@ public class PageRankAnalyzer {
      */
     public double computePageRank(URI pageUri) {
         // Implementation note: this method should be very simple: just one line!
-        // TODO: Add working code here
-        return 1.0;
+        return pageRanks.get(pageUri);
     }
 }
