@@ -4,11 +4,11 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import datastructures.concrete.KVPair;
+import datastructures.concrete.dictionaries.ArrayDictionary.DictonaryIterator;
 import datastructures.interfaces.IDictionary;
 
 public class AvlTreeDictionary<K extends Comparable<K>, V> implements IDictionary<K, V> {
 	private KVPair<K, V> data;
-	private int size = 0;
 	private int height;
 	private AvlTreeDictionary<K,V> root;
 	private AvlTreeDictionary<K,V> left;
@@ -21,8 +21,7 @@ public class AvlTreeDictionary<K extends Comparable<K>, V> implements IDictionar
 		this.root = null;
 		this.left = null;
 		this.right = null;
-		size = 0;
-		height = 0;
+		this.height = 0;
 	}
 	
 	public AvlTreeDictionary(K key, V value, AvlTreeDictionary<K,V> left, AvlTreeDictionary<K,V> right, AvlTreeDictionary<K,V> parent) {
@@ -30,7 +29,7 @@ public class AvlTreeDictionary<K extends Comparable<K>, V> implements IDictionar
 		this.left = left;
 		this.right = right;
 		this.parent = parent;
-		height = 0;
+		this.height = 0;
 	}
 	
 	private K getKey() { 
@@ -63,7 +62,6 @@ public class AvlTreeDictionary<K extends Comparable<K>, V> implements IDictionar
 	
 	@Override
 	public void put(K key, V value) {
-		size ++;
 		root = insert(root,key, value, null);
 	}
 	private AvlTreeDictionary<K,V> insert(AvlTreeDictionary<K,V> currentNode,K key,V value, AvlTreeDictionary<K,V> parentNode){
@@ -181,48 +179,7 @@ public class AvlTreeDictionary<K extends Comparable<K>, V> implements IDictionar
 		return null;
 		
 	}
-			/*AvlTreeDictionary<K,V> currentNode = findHelper(root, key);
-			V result = currentNode.get(key);
-			//has no children
-			if(currentNode.left == null&& currentNode.right == null) {
-				currentNode = currentNode.parent;
-				if(currentNode.left.data.getKey().compareTo(key) == 0) {
-					currentNode.left = null;
-				}else {
-					currentNode.right = null;
-				}
-			//only has right child
-			}else if(currentNode.left == null) {
-				currentNode.right.parent = currentNode.parent;
-				currentNode = currentNode.parent;
-				if(currentNode.left.data.getKey().compareTo(key) == 0) {
-					currentNode.left = currentNode.left.right;
-				}else {
-					currentNode.right = currentNode.right.right;
-				}
-			}else if(currentNode.right == null) {
-				currentNode.left.parent = currentNode.parent;
-				currentNode = currentNode.parent;
-				if(currentNode.left.data.getKey().compareTo(key) == 0) {
-					currentNode.left = currentNode.left.left;
-				}else {
-					currentNode.right= currentNode.right.left;
-				}
-			}else {
-				//nightmare: two full children
-				AvlTreeDictionary<K,V> successor = currentNode.right;
-				while(successor.left != null) {
-					successor = successor.left;
-				}
-				currentNode.data = successor.data;
-				currentNode = successor.parent;
-				currentNode.left = successor.right;
-			}
-			return result;
-		}
-		
-	}
-*/
+
 	@Override
 	public boolean containsKey(K key) {
 		//if the return value of findHelper() is null, key is not in the tree;
@@ -232,14 +189,59 @@ public class AvlTreeDictionary<K extends Comparable<K>, V> implements IDictionar
 
 	@Override
 	public int size() {
-		return this.size;
+		int size = size(root);
+	}
+	
+	private int size(AvlTreeDictionary<K, V> node) {
+		if(node == null) {
+			return 0;
+		}else {
+			return (1 + size(node.left) + size(node.right));
+		}
 	}
 
 	@Override
 	public Iterator<KVPair<K, V>> iterator() {
-		// TODO Auto-generated method stub
-		//
-		return null;
+		return new AvlIterator<KVPair<K, V>>(root);
+	}
+	
+	private class AvlIterator<T> implements Iterator<KVPair<K, V>> {
+		private AvlTreeDictionary<K,V> next;
+		
+		public AvlIterator(AvlTreeDictionary<K,V> root){
+			next = root;
+			while(root.left != null ) {
+				next = next.left;
+			}
+		}
+		public boolean hasNext(){
+			return next != null;
+		}
+		
+		public KVPair<K, V> next(){
+			if(!hasNext()) {
+				throw new NoSuchElementException();
+			}
+			KVPair<K, V> result = next.data;
+			if(next.right != null) {
+				next = next.right;
+				while(next.left != null) {
+					next = next.left;
+				}
+				return result;
+			}
+			while(true) {
+				if(next.parent == null) {
+					next = null;
+					return result;
+				}
+				if(next.parent.left == next) {
+					next = next.parent;
+					return result;
+				}
+				next = next.parent;
+			}
+		}
 	}
     
 	private int getHeight(AvlTreeDictionary<K,V> currentNode) {
@@ -290,3 +292,46 @@ public class AvlTreeDictionary<K extends Comparable<K>, V> implements IDictionar
 		return rotateRightChild(currentNode);
 	}
 }
+
+/*AvlTreeDictionary<K,V> currentNode = findHelper(root, key);
+V result = currentNode.get(key);
+//has no children
+if(currentNode.left == null&& currentNode.right == null) {
+	currentNode = currentNode.parent;
+	if(currentNode.left.data.getKey().compareTo(key) == 0) {
+		currentNode.left = null;
+	}else {
+		currentNode.right = null;
+	}
+//only has right child
+}else if(currentNode.left == null) {
+	currentNode.right.parent = currentNode.parent;
+	currentNode = currentNode.parent;
+	if(currentNode.left.data.getKey().compareTo(key) == 0) {
+		currentNode.left = currentNode.left.right;
+	}else {
+		currentNode.right = currentNode.right.right;
+	}
+}else if(currentNode.right == null) {
+	currentNode.left.parent = currentNode.parent;
+	currentNode = currentNode.parent;
+	if(currentNode.left.data.getKey().compareTo(key) == 0) {
+		currentNode.left = currentNode.left.left;
+	}else {
+		currentNode.right= currentNode.right.left;
+	}
+}else {
+	//nightmare: two full children
+	AvlTreeDictionary<K,V> successor = currentNode.right;
+	while(successor.left != null) {
+		successor = successor.left;
+	}
+	currentNode.data = successor.data;
+	currentNode = successor.parent;
+	currentNode.left = successor.right;
+}
+return result;
+}
+
+}
+*/
