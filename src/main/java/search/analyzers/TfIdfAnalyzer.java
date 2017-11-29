@@ -56,7 +56,7 @@ public class TfIdfAnalyzer {
 	 * in any documents to their IDF score.
 	 */
 	private IDictionary<String, Double> computeIdfScores(ISet<Webpage> pages) {
-		IDictionary<String, Double> idfScores = new ChainedHashDictionary<String, Double>();
+		IDictionary<String, Double> theIdfScores = new ChainedHashDictionary<String, Double>();
 		for (Webpage page : pages) {
 			// Transfer all the words in the page to a set to remove duplicates
 			ISet<String> docWords = new ChainedHashSet<String>();
@@ -65,19 +65,19 @@ public class TfIdfAnalyzer {
 			}
 			// Increment the score dictionary based on the unique words in the document
 			for (String word : docWords) {
-				if (idfScores.containsKey(word)) {
-					idfScores.put(word, idfScores.get(word) + 1);
+				if (theIdfScores.containsKey(word)) {
+					theIdfScores.put(word, theIdfScores.get(word) + 1);
 				} else {
-					idfScores.put(word, 1.0);
+					theIdfScores.put(word, 1.0);
 				}
 			}
 		}
 		// Take value of number of docs containing the term and calculate the idf score
-		for (KVPair<String, Double> pair : idfScores) {
+		for (KVPair<String, Double> pair : theIdfScores) {
 			double logNumber = Math.log(pages.size() / pair.getValue());
-			idfScores.put(pair.getKey(), logNumber);
+			theIdfScores.put(pair.getKey(), logNumber);
 		}
-		return idfScores;
+		return theIdfScores;
 	}
 
 	/**
@@ -107,16 +107,17 @@ public class TfIdfAnalyzer {
 	 * See spec for more details on what this method should do.
 	 */
 	private IDictionary<URI, IDictionary<String, Double>> computeAllDocumentTfIdfVectors(ISet<Webpage> pages) {
-		IDictionary<URI, IDictionary<String, Double>> documentTfIdfVectors = new ArrayDictionary<URI, IDictionary<String, Double>>();
+		IDictionary<URI, IDictionary<String, Double>> theDocumentTfIdfVectors = 
+				new ArrayDictionary<URI, IDictionary<String, Double>>();
 		for (Webpage page : pages) {
 			IDictionary<String, Double> scores = computeTfScores(page.getWords());
 			for (KVPair<String, Double> pair : scores) {
 				scores.put(pair.getKey(), pair.getValue() * idfScores.get(pair.getKey()));
 			}
-			documentTfIdfVectors.put(page.getUri(), scores);
+			theDocumentTfIdfVectors.put(page.getUri(), scores);
 			documentTfIdfNorms.put(page.getUri(), norm(scores));
 		}
-		return documentTfIdfVectors;
+		return theDocumentTfIdfVectors;
 	}
 
 	/**

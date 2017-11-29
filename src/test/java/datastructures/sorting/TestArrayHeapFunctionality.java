@@ -63,7 +63,7 @@ public class TestArrayHeapFunctionality extends BaseTest {
 		assertTrue(heap.isEmpty());
 	}
 
-	@Test()
+	@Test(timeout = SECOND)
 	public void testInsertInReverseOrder() {
 		IPriorityQueue<Integer> heap = this.makeInstance();
 		for (int i = 100; i > 0; i--) {

@@ -13,7 +13,7 @@ import datastructures.interfaces.ISet;
 import search.models.Webpage;
 
 public class EnhancedQueryAnalyzer {
-	
+
 	// This field must contain the IDF score for every single word in all
 	// the documents.
 	private IDictionary<String, Double> idfScores;
@@ -55,7 +55,7 @@ public class EnhancedQueryAnalyzer {
 	 * in any documents to their IDF score.
 	 */
 	private IDictionary<String, Double> computeIdfScores(ISet<Webpage> pages) {
-		IDictionary<String, Double> idfScores = new ChainedHashDictionary<String, Double>();
+		IDictionary<String, Double> theIdfScores = new ChainedHashDictionary<String, Double>();
 		for (Webpage page : pages) {
 			// Transfer all the words in the page to a set to remove duplicates
 			ISet<String> docWords = new ChainedHashSet<String>();
@@ -64,19 +64,19 @@ public class EnhancedQueryAnalyzer {
 			}
 			// Increment the score dictionary based on the unique words in the document
 			for (String word : docWords) {
-				if (idfScores.containsKey(word)) {
-					idfScores.put(word, idfScores.get(word) + 1);
+				if (theIdfScores.containsKey(word)) {
+					theIdfScores.put(word, theIdfScores.get(word) + 1);
 				} else {
-					idfScores.put(word, 1.0);
+					theIdfScores.put(word, 1.0);
 				}
 			}
 		}
 		// Take value of number of docs containing the term and calculate the idf score
-		for (KVPair<String, Double> pair : idfScores) {
+		for (KVPair<String, Double> pair : theIdfScores) {
 			double logNumber = Math.log(pages.size() / pair.getValue());
-			idfScores.put(pair.getKey(), logNumber);
+			theIdfScores.put(pair.getKey(), logNumber);
 		}
-		return idfScores;
+		return theIdfScores;
 	}
 
 	/**
@@ -106,16 +106,16 @@ public class EnhancedQueryAnalyzer {
 	 * See spec for more details on what this method should do.
 	 */
 	private IDictionary<URI, IDictionary<String, Double>> computeAllDocumentTfIdfVectors(ISet<Webpage> pages) {
-		IDictionary<URI, IDictionary<String, Double>> documentTfIdfVectors = new ArrayDictionary<URI, IDictionary<String, Double>>();
+		IDictionary<URI, IDictionary<String, Double>> theDocumentTfIdfVectors = new ArrayDictionary<URI, IDictionary<String, Double>>();
 		for (Webpage page : pages) {
 			IDictionary<String, Double> scores = computeTfScores(page.getWords());
 			for (KVPair<String, Double> pair : scores) {
 				scores.put(pair.getKey(), pair.getValue() * idfScores.get(pair.getKey()));
 			}
-			documentTfIdfVectors.put(page.getUri(), scores);
+			theDocumentTfIdfVectors.put(page.getUri(), scores);
 			documentTfIdfNorms.put(page.getUri(), norm(scores));
 		}
-		return documentTfIdfVectors;
+		return theDocumentTfIdfVectors;
 	}
 
 	/**
@@ -143,50 +143,50 @@ public class EnhancedQueryAnalyzer {
 		}
 		return 0.0;
 	}
-	
+
 	private Double computeEnhancedRelevance(IList<String> query, URI pageUri) {
 		IDictionary<String, Double> documentVector = documentTfIdfVectors.get(pageUri);
-		if(!containsBlacklistedWord(query, documentVector) && hasAllExactPhrases(query, documentVector)) {
-			
+		if (!containsBlacklistedWord(query, documentVector) && hasAllExactPhrases(query, documentVector)) {
+
 		}
 		return 0.0;
 	}
-	
+
 	private boolean containsBlacklistedWord(IList<String> query, IDictionary<String, Double> documentVector) {
 		IList<String> wordsToRemove = new DoubleLinkedList<String>();
-		for(String s : query) {
-			if(s.contains("-")) {
-				if(documentVector.containsKey(s.replace("-", ""))) {
+		for (String s : query) {
+			if (s.contains("-")) {
+				if (documentVector.containsKey(s.replace("-", ""))) {
 					return true;
 				} else {
 					wordsToRemove.add(s);
 				}
 			}
 		}
-		for(String s : wordsToRemove) {
+		for (String s : wordsToRemove) {
 			query.delete(query.indexOf(s));
 		}
 		return false;
 	}
-	
+
 	private boolean hasAllExactPhrases(IList<String> query, IDictionary<String, Double> documentVector) {
-		//Do we have a query with an exact phrase
+		// Do we have a query with an exact phrase
 		IList<IList<String>> listOfExactPhrases = getExactPhrases(query);
-		if(!listOfExactPhrases.isEmpty()) {
-			for(IList<String> pharse : listOfExactPhrases) {
-				//TODO
+		if (!listOfExactPhrases.isEmpty()) {
+			for (IList<String> pharse : listOfExactPhrases) {
+				// TODO
 			}
 		}
 		return false;
 	}
-	
+
 	private IList<IList<String>> getExactPhrases(IList<String> query) {
 		IList<IList<String>> listOfExactPhrases = new DoubleLinkedList<IList<String>>();
 		int exactPhraseCount = 0;
 		boolean foundOpeningParen = false;
-		for(String s : query) {
-			if(foundOpeningParen) {
-				if(s.charAt(s.length() - 1) == '"') {
+		for (String s : query) {
+			if (foundOpeningParen) {
+				if (s.charAt(s.length() - 1) == '"') {
 					listOfExactPhrases.get(exactPhraseCount).add(s.replace("\"", ""));
 					foundOpeningParen = false;
 					exactPhraseCount++;
@@ -194,7 +194,7 @@ public class EnhancedQueryAnalyzer {
 					listOfExactPhrases.get(exactPhraseCount).add(s);
 				}
 			} else {
-				if(s.charAt(0) == '"') {
+				if (s.charAt(0) == '"') {
 					IList<String> phrase = new DoubleLinkedList<String>();
 					phrase.add(s.replace("\"", ""));
 					listOfExactPhrases.add(phrase);
@@ -227,10 +227,10 @@ public class EnhancedQueryAnalyzer {
 		}
 		return queryVector;
 	}
-	
+
 	private IDictionary<URI, IList<String>> setDocumentBodies(ISet<Webpage> webpages) {
 		IDictionary<URI, IList<String>> dict = new ChainedHashDictionary<URI, IList<String>>();
-		for(Webpage page : webpages) {
+		for (Webpage page : webpages) {
 			dict.put(page.getUri(), page.getWords());
 		}
 		return dict;

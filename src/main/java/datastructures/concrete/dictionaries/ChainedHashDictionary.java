@@ -22,8 +22,8 @@ public class ChainedHashDictionary<K, V> implements IDictionary<K, V> {
 	// IDictionary<K, V> objects
 	// Note that each element in the array will initially be null.
 	@SuppressWarnings("unchecked")
-	private IDictionary<K, V>[] makeArrayOfChains(int size) {
-		return (IDictionary<K, V>[]) new IDictionary[size];
+	private IDictionary<K, V>[] makeArrayOfChains(int theSize) {
+		return (IDictionary<K, V>[]) new IDictionary[theSize];
 	}
 
 	// Pass a K object as a parameter
@@ -92,12 +92,12 @@ public class ChainedHashDictionary<K, V> implements IDictionary<K, V> {
 		// Note: you do not need to change this method
 		return new ChainedIterator<>(this.chains);
 	}
-	
-	//TODO Used for debugging, remove when done with project
+
+	// TODO Used for debugging, remove when done with project
 	@Override
 	public String toString() {
 		String str = "{";
-		for(KVPair<K, V> pair : this) {
+		for (KVPair<K, V> pair : this) {
 			str += "\"" + pair.getKey().toString() + "\"=" + pair.getValue().toString() + ", ";
 		}
 		str += "}";

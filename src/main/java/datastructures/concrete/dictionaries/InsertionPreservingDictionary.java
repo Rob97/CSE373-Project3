@@ -8,9 +8,8 @@ import datastructures.interfaces.IDictionary;
 
 public class InsertionPreservingDictionary<K, V> implements IDictionary<K, V> {
 
-	private IDictionary<K, Entry<K, V>> indices; 
+	private IDictionary<K, Entry<K, V>> indices;
 	private Entry<K, V> first, last;
-
 
 	public InsertionPreservingDictionary() {
 		indices = new ChainedHashDictionary<K, Entry<K, V>>();
@@ -73,11 +72,11 @@ public class InsertionPreservingDictionary<K, V> implements IDictionary<K, V> {
 
 	private static class OrderedIterator<K, V> implements Iterator<KVPair<K, V>> {
 		private Entry<K, V> current;
-		
+
 		public OrderedIterator(Entry<K, V> first) {
 			current = first;
 		}
-		
+
 		@Override
 		public boolean hasNext() {
 			return current != null;
@@ -113,7 +112,7 @@ public class InsertionPreservingDictionary<K, V> implements IDictionary<K, V> {
 		public K getKey() {
 			return pair.getKey();
 		}
-		
+
 		public V getValue() {
 			return pair.getValue();
 		}

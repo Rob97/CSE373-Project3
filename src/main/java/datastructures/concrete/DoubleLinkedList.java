@@ -30,7 +30,7 @@ public class DoubleLinkedList<T> implements IList<T> {
 		this.size = 0;
 	}
 
-	//Add a new node to the end of the list
+	// Add a new node to the end of the list
 	@Override
 	public void add(T item) {
 		if (front == null) { // Add when empty
@@ -46,18 +46,18 @@ public class DoubleLinkedList<T> implements IList<T> {
 		size++;
 	}
 
-	//Remove the last item in the list
+	// Remove the last item in the list
 	@Override
 	public T remove() {
 		if (back != null) {
 			T item = back.data;
-			if (size == 1) { //Remove item from size 1 list
+			if (size == 1) { // Remove item from size 1 list
 				front = null;
 				back = null;
-			} else if (size == 2) { //Remove item from size 2 list
+			} else if (size == 2) { // Remove item from size 2 list
 				back = front;
 				front.next = null;
-			} else { //remove item from size 3 or more list
+			} else { // remove item from size 3 or more list
 				back = back.prev;
 				back.next = null;
 			}
@@ -67,15 +67,15 @@ public class DoubleLinkedList<T> implements IList<T> {
 		throw new EmptyContainerException();
 	}
 
-	//Returns the item at the given index
-	//Throws IndexOutOfBoundsException if the given index is not in the list
+	// Returns the item at the given index
+	// Throws IndexOutOfBoundsException if the given index is not in the list
 	@Override
 	public T get(int index) {
 		return this.getNode(index).data;
 	}
 
-	//Sets the value of the item at a given index to a new value
-	//Throws IndexOutOfBoundsException if the given index is not in the list
+	// Sets the value of the item at a given index to a new value
+	// Throws IndexOutOfBoundsException if the given index is not in the list
 	@Override
 	public void set(int index, T item) {
 		Node<T> cur = this.getNode(index);
@@ -97,8 +97,10 @@ public class DoubleLinkedList<T> implements IList<T> {
 		}
 	}
 
-	//Inserts an item into the list at the given index, subsequent items in the list have their indexes shifted by one
-	//Throws IndexOutOfBoundsException if the given index is not between 0 and the size of the list
+	// Inserts an item into the list at the given index, subsequent items in the
+	// list have their indexes shifted by one
+	// Throws IndexOutOfBoundsException if the given index is not between 0 and the
+	// size of the list
 	@Override
 	public void insert(int index, T item) {
 		if (index == size) { // Insert at end
@@ -122,20 +124,22 @@ public class DoubleLinkedList<T> implements IList<T> {
 		}
 	}
 
-	//Removes the item at the given index
-	//Throws IndexOutOfBoundsException if the given index is not in the list
+	// Removes the item at the given index
+	// Throws IndexOutOfBoundsException if the given index is not in the list
 	@Override
 	public T delete(int index) {
 		if (size > 0) {
-			if (index == (size - 1)) { //If the list only has one item
+			if (index == (size - 1)) { // If the list only has one item
 				return this.remove();
-			} else if (index == 0) { //If the list has more than one item, but we are still deleting from the beginning
+			} else if (index == 0) { 
+				// If the list has more than one item, but we are still deleting from the
+				// beginning
 				front.next.prev = null;
 				T dataToReturn = front.data;
 				front = front.next;
 				size--;
-				return dataToReturn;				
-			} else { //Deleting from the middle
+				return dataToReturn;
+			} else { // Deleting from the middle
 				Node<T> node = this.getNode(index);
 				node.prev.next = node.next;
 				node.next.prev = node.prev;
@@ -146,7 +150,8 @@ public class DoubleLinkedList<T> implements IList<T> {
 		throw new IndexOutOfBoundsException();
 	}
 
-	//Returns the index of a given item in the list or -1 if the item is not in the list
+	// Returns the index of a given item in the list or -1 if the item is not in the
+	// list
 	@Override
 	public int indexOf(T item) {
 		int index = 0;
@@ -161,13 +166,13 @@ public class DoubleLinkedList<T> implements IList<T> {
 		return -1;
 	}
 
-	//Return the size of the list
+	// Return the size of the list
 	@Override
 	public int size() {
 		return size;
 	}
 
-	//Return true if a given item is in the list and false otherwise
+	// Return true if a given item is in the list and false otherwise
 	@Override
 	public boolean contains(T other) {
 		return this.indexOf(other) != -1;
@@ -182,8 +187,8 @@ public class DoubleLinkedList<T> implements IList<T> {
 		return new DoubleLinkedListIterator<>(this.front);
 	}
 
-	//Helper method that gets a node at a given index
-	//Throws IndexOutOfBoundsException if the given index is not in the list
+	// Helper method that gets a node at a given index
+	// Throws IndexOutOfBoundsException if the given index is not in the list
 	private Node<T> getNode(int index) {
 		if (index >= 0 && index < size) {
 			if (index < size / 2) { // If we are near the first half of elements start from the front

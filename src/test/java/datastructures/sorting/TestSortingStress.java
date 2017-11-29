@@ -51,7 +51,6 @@ public class TestSortingStress extends BaseTest {
 		List<Integer> list = new ArrayList<Integer>();
 		for (int i = 0; i < 100000; i++) {
 			int random = rand.nextInt((1000000 - -1000000) + 1) + -1000000; 
-																			
 			iList.add(random);
 			list.add(random);
 		}
