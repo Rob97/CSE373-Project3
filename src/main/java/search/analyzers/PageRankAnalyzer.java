@@ -123,14 +123,19 @@ public class PageRankAnalyzer {
 					if (tempPageRank.get(uris) == 0.0) {
 						tempPageRank.put(uris, pageRank.get(uri) / uriSet.size() * decay);
 					} else {
-						// take the old page rank for every webpage and equally share it with every web
+						// take the old page rank for every 
+						//webpage and equally share it with every web
 						// page it links to.
-						tempPageRank.put(uris, tempPageRank.get(uris) + pageRank.get(uri) / uriSet.size() * decay);
+						tempPageRank.put(uris, 
+								tempPageRank.get(uris) + 
+								pageRank.get(uri) / uriSet.size() * decay);
 					}
 				}
 			}
 			for (URI uri : uriLog) {
-				tempPageRank.put(uri, tempPageRank.get(uri) + (1.0 - decay) / uriLog.size() + zeroOutGoingSum);
+				tempPageRank.put(uri, 
+						tempPageRank.get(uri) + (1.0 - decay) / uriLog.size() 
+						+ zeroOutGoingSum);
 			}
 
 			boolean allLessThanEpsilon = true;
