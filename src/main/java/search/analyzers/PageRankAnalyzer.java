@@ -112,39 +112,16 @@ public class PageRankAnalyzer {
 			IDictionary<URI, Double> tempPageRank = new ChainedHashDictionary<>();
 			for (URI uri : uriLog) {
 				tempPageRank.put(uri, 0.0);
-			}
-			double zeroOutGoingSum = 0; // use to calculate no ougoing links case
-			for (URI uri : uriLog) {
-				ISet<URI> uriSet = graph.get(uri);
-				if (uriSet.size() == 0) {
-					zeroOutGoingSum += pageRank.get(uri) / uriLog.size() * decay;
-				}
-				for (URI uris : uriSet) {
-					if (tempPageRank.get(uris) == 0.0) {
-						tempPageRank.put(uris, pageRank.get(uri) / uriSet.size() * decay);
-					} else {
-						// take the old page rank for every 
-						//webpage and equally share it with every web
-						// page it links to.
-						tempPageRank.put(uris, 
-								tempPageRank.get(uris) + 
-								pageRank.get(uri) / uriSet.size() * decay);
-					}
-				}
-			}
+			}			
+			// use to calculate no outgoing links case
+			double zeroOutGoingSum = calculateRank(graph, decay, pageRank, tempPageRank); 
 			for (URI uri : uriLog) {
 				tempPageRank.put(uri, 
 						tempPageRank.get(uri) + (1.0 - decay) / uriLog.size() 
 						+ zeroOutGoingSum);
 			}
 
-			boolean allLessThanEpsilon = true;
-			for (URI uri : uriLog) {
-				// compare epsilon value
-				if (Math.abs(pageRank.get(uri) - tempPageRank.get(uri)) > epsilon) {
-					allLessThanEpsilon = false;
-				}
-			}
+			boolean allLessThanEpsilon = isLessThanEpsilon(pageRank, tempPageRank, epsilon);
 			if (allLessThanEpsilon) {
 				return pageRank;
 			} else {
@@ -153,7 +130,41 @@ public class PageRankAnalyzer {
 		}
 		return pageRank;
 	}
+	
+	private double calculateRank(IDictionary<URI, ISet<URI>> graph, double decay, IDictionary<URI, Double> pageRank, 
+			IDictionary<URI, Double> tempPageRank){
+		double zeroOutGoingSum = 0.0;
+		for (URI uri : uriLog) {
+			ISet<URI> uriSet = graph.get(uri);
+			if (uriSet.size() == 0) {
+				zeroOutGoingSum += pageRank.get(uri) / uriLog.size() * decay;
+			}
+			for (URI uris : uriSet) {
+				if (tempPageRank.get(uris) == 0.0) {
+					tempPageRank.put(uris, pageRank.get(uri) / uriSet.size() * decay);
+				} else {
+					// take the old page rank for every 
+					//webpage and equally share it with every web
+					// page it links to.
+					tempPageRank.put(uris, 
+							tempPageRank.get(uris) + 
+							pageRank.get(uri) / uriSet.size() * decay);
+				}
+			}
+		}
+		return zeroOutGoingSum;
+	}
 
+	private boolean isLessThanEpsilon(IDictionary<URI, Double> pageRank, 
+				IDictionary<URI, Double> tempPageRank, double epsilon) {
+		boolean epsilonResult = true;
+		for (URI uri : uriLog) {
+			if (Math.abs(pageRank.get(uri) - tempPageRank.get(uri)) > epsilon) {
+				epsilonResult = false;
+			}
+		}
+		return epsilonResult;
+	}
 	/**
 	 * Returns the page rank of the given URI.
 	 *
