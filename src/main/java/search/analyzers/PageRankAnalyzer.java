@@ -100,8 +100,8 @@ public class PageRankAnalyzer {
 	 *            This value is meant as a safety valve to prevent us from infinite
 	 *            looping in case our page rank never converges.
 	 */
-	private IDictionary<URI, Double> makePageRanks(IDictionary<URI, ISet<URI>> graph, double decay, int limit,
-			double epsilon) {
+	private IDictionary<URI, Double> makePageRanks(IDictionary<URI, ISet<URI>> graph, 
+			double decay, int limit, double epsilon) {
 		IDictionary<URI, Double> pageRank = new ChainedHashDictionary<>();
 		double initialPageRank = 1.0 / uriLog.size();
 		// Initialize the rank value
@@ -131,8 +131,8 @@ public class PageRankAnalyzer {
 		return pageRank;
 	}
 	
-	private double calculateRank(IDictionary<URI, ISet<URI>> graph, double decay, IDictionary<URI, Double> pageRank, 
-			IDictionary<URI, Double> tempPageRank){
+	private double calculateRank(IDictionary<URI, ISet<URI>> graph, double decay, 
+			IDictionary<URI, Double> pageRank, IDictionary<URI, Double> tempPageRank){
 		double zeroOutGoingSum = 0.0;
 		for (URI uri : uriLog) {
 			ISet<URI> uriSet = graph.get(uri);
