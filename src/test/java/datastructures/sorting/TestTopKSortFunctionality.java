@@ -112,7 +112,7 @@ public class TestTopKSortFunctionality extends BaseTest {
 		IList<Integer> iList = new DoubleLinkedList<>();
 		List<Integer> list = new ArrayList<Integer>();
 		for (int i = 0; i < 200; i++) {
-			 // Create random number between -1000 and 1000
+			// Create random number between -1000 and 1000
 			int random = rand.nextInt((1000 - -1000) + 1) + -1000;
 			iList.add(random);
 			list.add(random);

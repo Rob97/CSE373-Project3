@@ -10,8 +10,6 @@ import datastructures.concrete.DoubleLinkedList;
 import datastructures.interfaces.IList;
 import datastructures.interfaces.IPriorityQueue;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
